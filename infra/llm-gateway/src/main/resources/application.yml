@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: llm-gateway
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/llm_gateway
+    username: postgres
+    password: password
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start-only
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Placeholders - will need real values or mock for tests
+          issuer-uri: https://placeholder-issuer.com
+          jwk-set-uri: https://placeholder-issuer.com/.well-known/jwks.json
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:sk-placeholder}
+
+logging:
+  level:
+    org.tatrman.llmgateway: DEBUG
+    org.springframework.security: DEBUG

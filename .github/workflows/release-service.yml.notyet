@@ -1,0 +1,137 @@
+name: Release Service
+
+on:
+  push:
+    tags:
+      - '*/v*' # Triggers on "payment-service-spring/v1.0.0"
+
+env:
+  REGISTRY_NAME: mycompany.azurecr.io
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- 1. Parse Tag & Detect Type ---
+      - name: Detect Service Metadata
+        id: meta
+        run: |
+          TAG=${{ github.ref_name }}
+          # Extract service name and version
+          # Input: payment-service-spring/v1.0.0
+          SERVICE_NAME=$(echo $TAG | rev | cut -d'/' -f2- | rev)
+          VERSION=$(echo $TAG | rev | cut -d'/' -f1 | rev | sed 's/^v//')
+
+          # Find the path (Assuming strictly inside apps/)
+          PROJECT_PATH="apps/$SERVICE_NAME"
+
+          if [ ! -d "$PROJECT_PATH" ]; then
+            echo "::error::Directory $PROJECT_PATH does not exist!"
+            exit 1
+          fi
+
+          # Detect Type based on file existence
+          if [ -f "$PROJECT_PATH/build.gradle.kts" ]; then
+            BUILD_TYPE="kotlin-jib"
+          elif [ -f "$PROJECT_PATH/pyproject.toml" ]; then
+            BUILD_TYPE="python-docker"
+          elif [ -f "$PROJECT_PATH/package.json" ]; then
+            BUILD_TYPE="vue-docker"
+          else
+            echo "::error::Could not detect project type for $SERVICE_NAME"
+            exit 1
+          fi
+
+          echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "PROJECT_PATH=$PROJECT_PATH" >> $GITHUB_ENV
+          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
+
+          echo "✅ Detected $SERVICE_NAME ($VERSION) as $BUILD_TYPE"
+
+      # --- 2. Login to Registry ---
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # --- 3. Build & Push: KOTLIN (Jib) ---
+      # Triggers if we found build.gradle.kts
+      - uses: actions/setup-java@v4
+        if: env.BUILD_TYPE == 'kotlin-jib'
+        with: { distribution: 'temurin', java-version: '21' }
+
+      - uses: gradle/actions/setup-gradle@v3
+        if: env.BUILD_TYPE == 'kotlin-jib'
+
+      - name: Build & Push (Jib)
+        if: env.BUILD_TYPE == 'kotlin-jib'
+        run: |
+          # We use the Gradle Wrapper directly here because we need to pass Secrets securely
+          ./gradlew :apps:${{ env.SERVICE_NAME }}:jib \
+            -Djib.to.image=${{ env.REGISTRY_NAME }}/${{ env.SERVICE_NAME }} \
+            -Djib.to.tags=${{ env.VERSION }} \
+            -Djib.to.auth.username=${{ secrets.ACR_USERNAME }} \
+            -Djib.to.auth.password=${{ secrets.ACR_PASSWORD }}
+
+
+      # --- 4. Build & Push: PYTHON (Docker) ---
+      # Triggers if we found pyproject.toml
+      # Note: We do NOT need to install uv here; Docker build handles everything inside the container.
+      # We DO need to generate protos first if they are copied in, but typically
+      # a Docker build should be self-contained or use a multistage build.
+
+      # If your Python Dockerfile expects 'libs/shared-proto' to exist locally,
+      # we must generate it on the runner first.
+      - uses: actions/setup-java@v4
+        if: env.BUILD_TYPE == 'python-docker'
+        with: { distribution: 'temurin', java-version: '21' }
+      - uses: gradle/actions/setup-gradle@v3
+        if: env.BUILD_TYPE == 'python-docker'
+
+      - name: Generate Protos for Python
+        if: env.BUILD_TYPE == 'python-docker'
+        run: ./gradlew :libs:shared-proto:preparePythonPackage
+
+      - name: Build & Push (Python Docker)
+        if: env.BUILD_TYPE == 'python-docker'
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Context is root so we can access libs/
+          file: ${{ env.PROJECT_PATH }}/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY_NAME }}/${{ env.SERVICE_NAME }}:${{ env.VERSION }}
+
+
+      # --- 5. Build & Push: VUE (Docker) ---
+      # Triggers if we found package.json
+      # Similar to Python, we need the JS protos generated before Docker build
+      # if the Dockerfile copies them from the host or does npm install.
+
+      - uses: actions/setup-java@v4
+        if: env.BUILD_TYPE == 'vue-docker'
+        with: { distribution: 'temurin', java-version: '21' }
+      - uses: gradle/actions/setup-gradle@v3
+        if: env.BUILD_TYPE == 'vue-docker'
+
+      - name: Generate Protos for Vue
+        if: env.BUILD_TYPE == 'vue-docker'
+        run: ./gradlew :libs:shared-proto:prepareJsPackage
+
+      # For Vue, we typically run the build on the Host to use the cached Gradle Node environment,
+      # THEN copy dist to Nginx. But standard Docker multistage is also fine.
+      # Let's assume Standard Dockerfile at root of service.
+      - name: Build & Push (Vue Docker)
+        if: env.BUILD_TYPE == 'vue-docker'
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Context is root so we can access libs/
+          file: ${{ env.PROJECT_PATH }}/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY_NAME }}/${{ env.SERVICE_NAME }}:${{ env.VERSION }}

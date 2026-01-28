@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- 1. Toolchain Setup ---
+      - uses: actions/setup-java@v4
+        with: { distribution: 'temurin', java-version: '21' }
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+
+      - uses: extractions/setup-just@v1
+
+      # --- 2. Initialization ---
+      # This runs 'just init' which builds protos and installs deps for all languages
+      - name: Initialize Repo
+        run: just init
+
+      # --- 3. Linting ---
+      # Fails if code style is incorrect (Ktlint, Ruff, Eslint)
+      - name: Lint Check
+        run: just lint-check
+
+      # --- 4. Testing ---
+      # We assume you have a 'test-all' or specific test commands in justfile.
+      # Here we trigger them individually for clarity in CI logs.
+
+      - name: Test Kotlin
+        run: ./gradlew test
+
+      - name: Test Python
+        # Loops through all python apps and runs tests
+        run: |
+          for dir in apps/*-py; do
+            SERVICE=$(basename $dir)
+            echo "Testing $SERVICE..."
+            just test-py $SERVICE
+          done
+
+      - name: Test Vue
+        run: |
+          for dir in apps/web-*; do
+            SERVICE=$(basename $dir)
+            echo "Testing $SERVICE..."
+            # Assuming you add 'test-vue' to justfile: cd apps/{{service}} && npm run test
+            cd apps/$SERVICE && npm run test
+          done
