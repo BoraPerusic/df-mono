@@ -2,49 +2,74 @@
 
 [versions]
 kotlin = "2.3.0"
-springBoot = "3.5.10"
-ktor = "3.4.0"
-ktor-otel = "2.18.0-alpha"
-protobufPlugin = "0.9.4"
-protobuf = "3.25.1" # The core library version
-jvmToolChain = 21
-exposed = "0.61.0"
-h2 = "2.3.232"
-jib = "3.4.0"
-otel-base = "1.52.0"
-otel-semconv = "1.34.0"
-nodePlugin = "7.0.2"
-node = "20.11.0"
-npm = "10.2.4"
-kotest = "5.8.1"
-nats = "0.5.7"
-flyway-core = "flyway"
 javax-annotation = "1.3.2"
-typsafe-config = "1.4.3"
+clickt = "5.1.0"
+typesafe-config = "1.4.3"
+jib = "3.4.0"
+jackson-kotlin = "3.0.4"
+
+kotlinx-ser = "1.10.0"
+
+otel-base = "1.58.0"
+otel-semconv = "1.38.0"
+
+spring-boot = "4.0.2"
+spring-dep = "1.1.7"
+spring-ai = "2.0.0-M2"
+spring-grpc = "1.0.1"
+spring-framework = "7.0.3"
+
+ktor = "3.4.0"
+ktor-otel = "2.18.1-alpha"
+
+logback = "1.5.26"
+slf4j= "2.0.17"
+kotest = "6.1.2"
+wiremock = "3.13.2"
+wiremock-testcontainers = "1.0-alpha-15"
+wiremock-boot = "4.0.9"
+testcontainers = "2.0.3"
+testcontainers-pgsql = "1.21.4"
+testcontainers-mssql = "1.21.4"
+mockk = "1.14.9"
+
+flyway = "11.20.3"
+h2 = "2.4.240"
+exposed = "1.0.0"
+mssql = "13.2.1.jre11"
+pgsql =  "42.7.9"
+
+nats = "0.6.2+3.5"
+
+protobuf-plugin = "0.9.5"
+grpc-starter = "3.1.0.RELEASE"
+grpc = "1.78.0"
+grpc-kotlin = "1.5.0"
+protobuf = "4.33.4"
+
 antlr-runtime = "4.13.2"
 lsp4j = "0.24.0"
-slf4j= "2.0.17"
+
 jgit = "6.8.0.202311291450-r"
 apache-commons-compress = "1.24.0"
 apache-poi = "5.5.1"
 apache-commons-csv = "1.11.0"
 elk = "0.11.0"
-kotlinx-ser = "1.9.0"
-clickt = "4.2.2"
-logback = "1.5.3"
-grpc-starter = "3.1.0.RELEASE"
-grpc_stub = "1.63.0"
-grpc-protobuf = "1.63.0"
-grpc-kotlin = "1.4.1"
-protobuf-java = "3.25.1"
-testc-wiremock = "1.0-alpha-13"
+
+
+nodePlugin = "7.0.2"
+node = "20.11.0"
+npm = "10.2.4"
+
 
 [libraries]
 # Base
 javax-annotation = { module = "javax.annotation:javax.annotation-api", version.ref = "javax-annotation"}
 clickt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clickt"}
-typsafe-config = { module = "com.typesafe:config", version.ref = "typsafe-config"}
-
+hocon-config = { module = "com.typesafe:config", version.ref = "typesafe-config"}
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 
 # KotlinX
 kotlinx-ser-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-ser"}
@@ -55,33 +80,89 @@ kotlinx-ser-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json"
 otel-sdk-extension-autoconfigure = { module = "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure", version.ref = "otel-base" }
 otel-semconv = { module = "io.opentelemetry.semconv:opentelemetry-semconv", version.ref = "otel-semconv" }
 otel-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version.ref = "otel-base" }
+otel-api = { module = "io.opentelemetry:opentelemetry-api", version.ref = "otel-base" }
 
 # Spring
-boot-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
-boot-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
-boot-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "springBoot" }
-boot-oauth2 = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server", version.ref = "springBoot" }
-boot-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
-boot-ai = { module = "org.springframework.ai:spring-ai-openai-spring-boot-starter", version.ref = "springBoot" }
+boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
+boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server", version.ref = "spring-boot" }
+boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+boot-starter-grpc = { module = "org.springframework.grpc:spring-grpc-spring-boot-starter", version.ref = "spring-grpc" }
+
+boot-h2console = { module = "org.springframework.boot:spring-boot-h2console", version.ref = "spring-boot"}
+boot-starter-elasticsearch = { module = "org.springframework.boot:spring-boot-starter-elasticsearch", version.ref = "spring-boot"}
+boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot"}
+boot-starter-freemarker = { module = "org.springframework.boot:spring-boot-starter-freemarker", version.ref = "spring-boot"}
+boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring-boot"}
+boot-starter-neo4j = { module = "org.springframework.boot:spring-boot-starter-neo4j", version.ref = "spring-boot"}
+boot-starter-opentelemetry = { module = "org.springframework.boot:spring-boot-starter-opentelemetry", version.ref = "spring-boot"}
+boot-starter-security-oauth2-authorization-server = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server", version.ref = "spring-boot"}
+boot-starter-security-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client", version.ref = "spring-boot"}
+boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot"}
+
+boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot"}
+boot-starter-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test", version.ref = "spring-boot"}
+boot-starter-data-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-data-jdbc-test", version.ref = "spring-boot"}
+boot-starter-elasticsearch-test = { module = "org.springframework.boot:spring-boot-starter-elasticsearch-test", version.ref = "spring-boot"}
+boot-starter-flyway-test = { module = "org.springframework.boot:spring-boot-starter-flyway-test", version.ref = "spring-boot"}
+boot-starter-freemarker-test = { module = "org.springframework.boot:spring-boot-starter-freemarker-test", version.ref = "spring-boot"}
+boot-starter-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-jdbc-test", version.ref = "spring-boot"}
+boot-starter-neo4j-test = { module = "org.springframework.boot:spring-boot-starter-neo4j-test", version.ref = "spring-boot"}
+boot-starter-opentelemetry-test = { module = "org.springframework.boot:spring-boot-starter-opentelemetry-test", version.ref = "spring-boot"}
+boot-starter-security-oauth2-authorization-server-test = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server-test", version.ref = "spring-boot"}
+boot-starter-security-oauth2-client-test = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client-test", version.ref = "spring-boot"}
+boot-starter-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "spring-boot"}
+boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot"}
+spring-grpc-test = { module = "org.springframework.grpc:spring-grpc-test", version.ref = "spring-grpc"}
+
+boot-starter-ai = { module = "org.springframework.ai:spring-ai-starter-model-openai", version.ref = "spring-ai" }
+ai-advisors-vector-store = { module = "org.springframework.ai:spring-ai-advisors-vector-store", version.ref = "spring-ai"}
+ai-jsoup-document-reader = { module = "org.springframework.ai:spring-ai-jsoup-document-reader", version.ref = "spring-ai"}
+ai-markdown-document-reader = { module = "org.springframework.ai:spring-ai-markdown-document-reader", version.ref = "spring-ai"}
+ai-pdf-document-reader = { module = "org.springframework.ai:spring-ai-pdf-document-reader", version.ref = "spring-ai"}
+ai-starter-mcp-client = { module = "org.springframework.ai:spring-ai-starter-mcp-client", version.ref = "spring-ai"}
+ai-starter-mcp-server-webmvc = { module = "org.springframework.ai:spring-ai-starter-mcp-server-webmvc", version.ref = "spring-ai"}
+ai-starter-model-anthropic = { module = "org.springframework.ai:spring-ai-starter-model-anthropic", version.ref = "spring-ai"}
+ai-starter-model-azure-openai = { module = "org.springframework.ai:spring-ai-starter-model-azure-openai", version.ref = "spring-ai"}
+ai-starter-model-chat-memory = { module = "org.springframework.ai:spring-ai-starter-model-chat-memory", version.ref = "spring-ai"}
+ai-starter-model-chat-memory-repository-jdbc = { module = "org.springframework.ai:spring-ai-starter-model-chat-memory-repository-jdbc", version.ref = "spring-ai"}
+ai-starter-model-ollama = { module = "org.springframework.ai:spring-ai-starter-model-ollama", version.ref = "spring-ai"}
+ai-starter-model-openai = { module = "org.springframework.ai:spring-ai-starter-model-openai", version.ref = "spring-ai"}
+ai-starter-model-openai-sdk = { module = "org.springframework.ai:spring-ai-starter-model-openai-sdk", version.ref = "spring-ai"}
+ai-starter-model-postgresml-embedding = { module = "org.springframework.ai:spring-ai-starter-model-postgresml-embedding", version.ref = "spring-ai"}
+ai-starter-model-transformers = { module = "org.springframework.ai:spring-ai-starter-model-transformers", version.ref = "spring-ai"}
+ai-starter-vector-store-pgvector = { module = "org.springframework.ai:spring-ai-starter-vector-store-pgvector", version.ref = "spring-ai"}
+ai-starter-vector-store-qdrant = { module = "org.springframework.ai:spring-ai-starter-vector-store-qdrant", version.ref = "spring-ai"}
+ai-starter-vector-store-redis = { module = "org.springframework.ai:spring-ai-starter-vector-store-redis", version.ref = "spring-ai"}
+ai-tika-document-reader = { module = "org.springframework.ai:spring-ai-tika-document-reader", version.ref = "spring-ai"}
+
+spring-grpc-server-web-spring-boot-starter = { module = "org.springframework.grpc:spring-grpc-server-web-spring-boot-starter", version.ref = "spring-grpc"}
+spring-security-webauthn = { module = "org.springframework.security:spring-security-webauthn", version.ref = "spring-framework"}
+
+boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot"}
+boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot"}
+boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot"}
+ai-spring-boot-docker-compose = { module = "org.springframework.ai:spring-ai-spring-boot-docker-compose", version.ref = "spring-ai"}
 
 # Ktor
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
-ktor-server-csrf = { module = "io.ktor:ktor-server-csrf", version.ref = "ktor" }
-ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
-ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
-ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
-ktor-server-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header", version.ref = "ktor" }
-ktor-server-openapi = { module = "io.ktor:ktor-server-openapi", version.ref = "ktor" }
-ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi", version.ref = "ktor" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
-ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
-ktor-opentelemetry = { module = "io.opentelemetry.instrumentation:opentelemetry-ktor-3.0", version.ref = "ktor-otel" }
+ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+ktor-server-csrf = { module = "io.ktor:ktor-server-csrf-jvm", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt-jvm", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-apache = { module = "io.ktor:ktor-client-apache-jvm", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors-jvm", version.ref = "ktor" }
+ktor-server-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header-jvm", version.ref = "ktor" }
+ktor-server-openapi = { module = "io.ktor:ktor-server-openapi-jvm", version.ref = "ktor" }
+ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi-jvm", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml-jvm", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets-jvm", version.ref = "ktor"}
+ktor-opentelemetry = { module = "io.opentelemetry.instrumentation:opentelemetry-ktor-3.0", version.ref = "ktor-otel" }
 
 # Logging
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
@@ -89,28 +170,41 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j"}
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j"}
 
 # Testing
-testcontainers-wiremock = { module = "org.wiremock.integrations:wiremock-testcontainers-module", version.ref = "testc-wiremock" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 kotest-extensions-spring = { module = "io.kotest:kotest-extensions-spring", version.ref = "kotest" }
+wiremock = { module = "org.wiremock:wiremock", version.ref = "wiremock"}
+mockk = { module = "io.mockk:mockk", version.ref = "mockk"}
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers"}
+testcontainers-pgsql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers"}
+testcontainers-mssql = { module = "org.testcontainers:testcontainers-mssqlserver", version.ref = "testcontainers"}
+testcontainers-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers"}
+wiremock-testcontainers = { module = "org.wiremock.integrations:wiremock-testcontainers-module", version.ref = "wiremock-testcontainers" }
+wiremock-boot = { module = "org.wiremock.integrations:wiremock-spring-boot", version.ref = "wiremock-boot"}
 
 # Databases
-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway-core"}
-h2 = { module = "com.h2database:h2", version.ref = "h2" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway"}
+flyway-mssql = { module = "org.flywaydb:flyway-sqlserver", version.ref = "flyway"}
+flyway-pgsql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway"}
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+mssql = { module = "com.microsoft.sqlserver:mssql-jdbc", version.ref = "mssql" }
+pgsql = { module = "org.postgresql:postgresql", version.ref = "pgsql" }
+
 # Middleware
-nats = { module = "io.nats:nats-spring-boot-starter", version.ref="nats"}
+nats = { module = "io.nats:nats-spring", version.ref="nats"}
 
 # gRPC
-grpc-starter = { module = "net.devh:grpc-spring-boot-starter", version.ref = "grpc-starter"}
-grpc_stub = { module = "io.grpc:grpc-stub", version.ref = "grpc_stub"}
-grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc-protobuf"}
+grpc_stub = { module = "io.grpc:grpc-stub", version.ref = "grpc"}
+grpc-netty-shaded = { module = "io.grpc:grpc-netty-shaded", version.ref = "grpc"}
+grpc-services = { module = "io.grpc:grpc-services", version.ref = "grpc"}
+grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc"}
 grpc-kotlin = { module = "io.grpc:grpc-kotlin-stub", version.ref = "grpc-kotlin"}
-protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-java"}
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf"}
 protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobuf" }
 protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 
@@ -138,33 +232,15 @@ kotest = ["kotest-runner", "kotest-assertions", "kotest-property"]
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dep = { id = "io.spring.dependency-management", version.ref = "spring-dep"}
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
 jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 node = { id = "com.github.node-gradle.node", version.ref = "nodePlugin" }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+flyway = { id = "org.flywaydb:flyway-gradle-plugin", version.ref = "flyway"}
 
 
 

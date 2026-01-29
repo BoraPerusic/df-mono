@@ -2,10 +2,16 @@ package cz.dfpartner.erp_service
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 
 @Serializable
 data class ExposedUser(val name: String, val age: Int)
@@ -52,7 +58,7 @@ class UserService(database: Database) {
 
     suspend fun delete(id: Int) {
         dbQuery {
-            Users.deleteWhere { Users.id.eq(id) }
+            Users.deleteWhere { Users.id eq id }
         }
     }
 

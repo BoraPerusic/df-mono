@@ -19,9 +19,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.instrumentation.ktor.v3_0.KtorServerTelemetry
-import org.jetbrains.exposed.sql.*
 
 fun Application.configureSecurity() {
     install(CSRF) {
@@ -35,9 +32,9 @@ fun Application.configureSecurity() {
         checkHeader("X-CSRF-Token")
     }
     // Please read the jwt property from the config file if you are using EngineMain
-    val jwtAudience = "jwt-audience"
-    val jwtDomain = "https://jwt-provider-domain/"
-    val jwtRealm = "ktor sample app"
+    val jwtAudience = environment.config.property("jwt.audience").getString()
+    val jwtDomain = environment.config.property("jwt.domain").getString()
+    val jwtRealm = environment.config.property("jwt.realm").getString()
     val jwtSecret = "secret"
     authentication {
         jwt {

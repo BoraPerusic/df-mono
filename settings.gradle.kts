@@ -7,8 +7,6 @@
  */
 
 pluginManagement {
-    // 1. Look for plugins in our local build-logic directory first
-    includeBuild("build-logic")
     repositories {
         mavenCentral()
         gradlePluginPortal()
@@ -25,5 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ai-platform"
 include(":services:erp")
-include(":infra:auth-service")
 include(":infra:llm-gateway")

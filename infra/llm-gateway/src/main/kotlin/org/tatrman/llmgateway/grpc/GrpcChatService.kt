@@ -4,9 +4,10 @@ import org.tatrman.llmgateway.web.ChatCompletionRequest
 import org.tatrman.llmgateway.web.ChatController
 import org.tatrman.llmgateway.web.ChatMessageDto
 import io.grpc.stub.StreamObserver
-import net.devh.boot.grpc.server.service.GrpcService
+import org.springframework.ai.chat.model.ChatResponse
+import org.springframework.stereotype.Service
 
-@GrpcService
+@Service
 class GrpcChatService(private val chatController: ChatController) :
         ChatServiceGrpc.ChatServiceImplBase() {
 

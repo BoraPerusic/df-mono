@@ -1,7 +1,8 @@
 plugins {
+    base
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
-    alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 application {
@@ -19,25 +20,26 @@ jib {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.exposed.core)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.h2)
-    implementation(libs.ktor.server.csrf)
-    implementation(libs.ktor.server.auth)
-    implementation(libs.ktor.server.auth.jwt)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.apache)
-    implementation(libs.ktor.server.cors)
-    implementation(libs.ktor.server.forwarded.header)
-    implementation(libs.ktor.server.openapi)
-    implementation(libs.ktor.server.routing.openapi)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.logback.classic)
-    implementation(libs.ktor.server.config.yaml)
-    testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.kotlin.test.junit)
+    implementation("io.ktor:ktor-server-core-jvm:3.4.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:3.4.0")
+    implementation("org.jetbrains.exposed:exposed-core:1.0.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
+    implementation("com.h2database:h2:2.4.240")
+    implementation("io.ktor:ktor-server-csrf-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-auth-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:3.4.0")
+    implementation("io.ktor:ktor-client-core-jvm:3.4.0")
+    implementation("io.ktor:ktor-client-apache-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-cors-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-forwarded-header-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-openapi-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-routing-openapi-jvm:3.4.0")
+    implementation("io.ktor:ktor-server-netty-jvm:3.4.0")
+    implementation("ch.qos.logback:logback-classic:1.5.26")
+    implementation("io.opentelemetry:opentelemetry-api:1.58.0")
+    implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.58.0")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.18.1-alpha")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:3.4.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.3.0")
 }
